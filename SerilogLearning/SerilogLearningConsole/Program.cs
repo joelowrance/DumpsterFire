@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SerilogLearningConsole;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false)
@@ -20,20 +22,18 @@ services.AddLogging(loggingBuilder =>
 {
     //loggingBuilder.ClearProviders();
     loggingBuilder.AddSerilog(dispose: true);
-});
-
-services.AddTransient<ILoggerFactory, LoggerFactory>();
-services.AddTransient(typeof(ILogger<>), typeof(Logger<>));
-services.AddTransient<SomeService>();
-services.AddDbContext<InMemoryContext>(options =>
+})
+.AddTransient<ILoggerFactory, LoggerFactory>()
+.AddTransient(typeof(ILogger<>), typeof(Logger<>))
+.AddTransient<SomeService>()
+.AddDbContext<InMemoryContext>(options =>
 {
     options.UseInMemoryDatabase(databaseName: "InMemoryDb");
-});
-
+})
+.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(Program).Assembly));
 
 
 var serviceProvider = services.BuildServiceProvider();
-
 var myService = serviceProvider.GetRequiredService<SomeService>();
 
 myService.DoDomething(123);
@@ -46,4 +46,10 @@ myService.AddPerson("Person5");
 var anotherInstance = serviceProvider.GetRequiredService<SomeService>();
 var people = anotherInstance.LoadAll();
 
+var mediator = serviceProvider.GetRequiredService<IMediator>();
+var response = await mediator.Send(new LoadPersonQuery("Person1"));
+
+Console.WriteLine(response.Id);
+
 Console.ReadKey();
+

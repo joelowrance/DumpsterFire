@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 
+namespace SerilogLearningConsole;
+
 public class SomeService
 {
     private readonly ILogger<SomeService> _logger;
