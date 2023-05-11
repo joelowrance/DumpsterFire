@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using BenchmarkDotNet.Running;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,7 +50,11 @@ var people = anotherInstance.LoadAll();
 var mediator = serviceProvider.GetRequiredService<IMediator>();
 var response = await mediator.Send(new LoadPersonQuery("Person1"));
 
+
 Console.WriteLine(response.Id);
+var summary = BenchmarkRunner.Run<Benchboy>();
+
+
 
 Console.ReadKey();
 
