@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\MegaMercado.Application\MegaMercado.Application.csproj" />
         <ProjectReference Include="..\MegaMercado.Domain\MegaMercado.Domain.csproj" />
         <ProjectReference Include="..\MegaMercado.Infrastructure\MegaMercado.Infrastructure.csproj" />
     </ItemGroup>

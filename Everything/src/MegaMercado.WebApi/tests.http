@@ -1,0 +1,9 @@
+GET http://localhost:5220/
+Accept: application/xml
+
+###
+GET http://localhost:5220/product/12
+
+
+###http://localhost:5220/
+
