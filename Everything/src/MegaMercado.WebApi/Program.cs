@@ -56,6 +56,12 @@ app.MapGet("/product/{id:int}", async (IMediator mediator, int id) =>
     return p;
 });
 
+app.MapGet("/category/{id:int}", async (IMediator mediator, int id, int? page) =>
+{
+    var p = await mediator.Send(new GetCategoryByIdQuery(id, page));
+    return p;
+});
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

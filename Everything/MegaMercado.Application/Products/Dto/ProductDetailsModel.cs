@@ -3,7 +3,7 @@
 public class ProductDetailsModel
 {
     public string Name { get; set; } = string.Empty;
-    public List<CategoryDetailsModel> Categories { get; set; } = new();
+    public List<CategoryOverviewModel> Categories { get; set; } = new();
 
     public int BrandId { get; set; }
     
