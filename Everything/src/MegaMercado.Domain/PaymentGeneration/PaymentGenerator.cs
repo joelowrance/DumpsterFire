@@ -48,31 +48,30 @@ public class PaymentGenerator
         else
         {
             var remainingAmount = orderTotal;
-            Payment previousPayment = null;
-            DateTimeOffset? paymentDate;
-            
 
             while (remainingAmount != 0)
             {
-                foreach (var t in term.PaymentTerms)
+                foreach (var paymentTerm in term.PaymentTerms)
                 {
-                    var paymentAmount = t.CalculateAmount(orderTotal);
+                    var paymentAmount = paymentTerm.CalculateAmount(orderTotal);
                     
-                    for (int i = 0; i < t.Length; i++)
+                    for (int i = 0; i < paymentTerm.Length; i++)
                     {
-                        var payment = new Payment();
-                        payment.PaymentAddressId = payments.Count == 0
-                            ? config.FirstPaymentAddressId
-                            : config.SubsequentPaymentAddressId;
-                        payment.PaymentType = payments.Count == 0
-                            ? config.FirstPaymentType
-                            : config.SubsequentPaymentType;
-                        payment.Amount = paymentAmount;
-                        payment.FeeAmount = GetFeeAmount();
-                        payment.Date = payments.Count == 0
-                            ? _firstPaymentStrategy.DeterminePaymentDate(null)
-                            : _subsequentPaymentStrategy.DeterminePaymentDate(payments[^1].Date);
-                        
+                        var payment = new Payment
+                        {
+                            PaymentAddressId = payments.Count == 0
+                                ? config.FirstPaymentAddressId
+                                : config.SubsequentPaymentAddressId,
+                            PaymentType = payments.Count == 0
+                                ? config.FirstPaymentType
+                                : config.SubsequentPaymentType,
+                            Amount = paymentAmount,
+                            FeeAmount = GetFeeAmount(),
+                            Date = payments.Count == 0
+                                ? _firstPaymentStrategy.DeterminePaymentDate(null)
+                                : _subsequentPaymentStrategy.DeterminePaymentDate(payments[^1].Date)
+                        };
+
                         payments.Add(payment);
                         remainingAmount = orderTotal - payments.Sum(x => x.Amount);
 
@@ -87,12 +86,48 @@ public class PaymentGenerator
                         break;
                     }
                 }
-                
                 //remaining amount is more than 0
                 if (remainingAmount > 0)
                 {
-                    payments.Last().Amount += remainingAmount;
-                    remainingAmount = 0;
+                    var lastPaymentAmount = payments.Last().Amount;
+
+                    if (remainingAmount > lastPaymentAmount)
+                    {
+                        //even pays?
+                        var evenPays = Math.Round(remainingAmount / (term.Length - payments.Count), 2);
+                        while (payments.Count < term.Length)
+                        {
+                            var payment = new Payment
+                            {
+                                PaymentAddressId = config.SubsequentPaymentAddressId,
+                                PaymentType = config.SubsequentPaymentType,
+                                Amount = evenPays,
+                                FeeAmount = GetFeeAmount(),
+                                Date = _subsequentPaymentStrategy.DeterminePaymentDate(payments[^1].Date)
+                            };
+                            
+                            payments.Add(payment);
+                            remainingAmount -= evenPays;
+                        }
+                        
+                        //remaining amount is less than zero
+                        if (remainingAmount < 0)
+                        {
+                            payments.Last().Amount -= Math.Abs(remainingAmount);
+                            remainingAmount = 0;
+                        }
+                        else if (remainingAmount > 0)
+                        {
+                            payments.Last().Amount += remainingAmount;
+                            remainingAmount = 0;
+                        }
+                        
+                    }
+                    else
+                    {
+                        payments.Last().Amount += remainingAmount;
+                        remainingAmount = 0;    
+                    }
                 }
                 
                 //remaining amount is less than zero
@@ -181,18 +216,18 @@ public class OrderTerms
 public class PaymentTerm
 {
     public int Length { get; set; }
-    public decimal? Amount { get; set; }
-    public decimal? Percentage { get; set; }
+    public decimal? TermAmount { get; set; }
+    public decimal? TermPercentage { get; set; }
 
     public decimal CalculateAmount(decimal amount)
     {
-        if (Amount != null) return amount;
+        if (TermAmount != null) return TermAmount.Value;
 
-        if (Percentage is null or < 0 or > 100)
+        if (TermPercentage is null or < 0 or > 100)
         {
-            throw new ArgumentException("Percentage must be an integer between 1 and 100", nameof(Percentage));
+            throw new ArgumentException("Percentage must be an integer between 1 and 100", nameof(TermPercentage));
         }
 
-        return Math.Round((Percentage.Value / 100m) * amount, 2);
+        return Math.Round((TermPercentage.Value / 100m) * amount, 2);
     }
 }
