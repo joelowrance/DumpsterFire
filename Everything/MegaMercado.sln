@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MegaMercado.Application", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScratchPads", "ScratchPads", "{238C223B-CD45-42F7-A01F-B2A696A48EDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MegaMercado.Domain.Tests", "MegaMercado.Domain.Tests\MegaMercado.Domain.Tests.csproj", "{08405558-43B2-4C61-AC0C-3D129B2F3470}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EFB3E699-4CD3-4600-A2FD-E7C87553CBB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,9 +51,14 @@ Global
 		{6023801A-06DE-4204-985F-F31E93567026}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6023801A-06DE-4204-985F-F31E93567026}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6023801A-06DE-4204-985F-F31E93567026}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08405558-43B2-4C61-AC0C-3D129B2F3470}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08405558-43B2-4C61-AC0C-3D129B2F3470}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08405558-43B2-4C61-AC0C-3D129B2F3470}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08405558-43B2-4C61-AC0C-3D129B2F3470}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1DE63450-2F1E-4E00-A1B0-D294A9E05053} = {CAD011D7-96ED-48DD-B11E-7099F133D303}
 		{E2C9FFAF-4CE3-416E-8FE8-A66FE40291A7} = {238C223B-CD45-42F7-A01F-B2A696A48EDD}
+		{08405558-43B2-4C61-AC0C-3D129B2F3470} = {EFB3E699-4CD3-4600-A2FD-E7C87553CBB9}
 	EndGlobalSection
 EndGlobal
