@@ -3,18 +3,6 @@ using Microsoft.Extensions.Logging;
 
 namespace MegaMercado.Domain.PaymentGeneration;
 
-
-public class PaymentConfig
-{
-    public int Id { get; set; }
-    public long? FirstPaymentAddressId { get; set; }
-    public long? SubsequentPaymentAddressId { get; set; }
-    public long? FirstPaymentId { get; set; }
-    public long? SubsequentPaymentId { get; set; }
-    public string FirstPaymentType { get; set; } = string.Empty;
-    public string SubsequentPaymentType { get; set; } = string.Empty;
-}
-
 public class PaymentGenerator
 {
     private PaymentDateCalculator _firstPaymentStrategy = null!;
@@ -153,81 +141,10 @@ public class PaymentGenerator
     }
 
 
-    private DateTimeOffset DeterminePaymentDate(DateTimeOffset? previousDate)
-    {
-        return previousDate is null
-            ? _firstPaymentStrategy.DeterminePaymentDate(previousDate)
-            : _subsequentPaymentStrategy.DeterminePaymentDate(previousDate);
-    } 
-}
-
-public abstract class PaymentDateCalculator
-{
-    public abstract DateTimeOffset DeterminePaymentDate(DateTimeOffset? previousPaymentDate);
-
-    protected DateTimeOffset LastDayOfMonthFor(DateTimeOffset forDate)
-    {
-        var currentDay1 = new DateTime(forDate.Year, forDate.Month, 1);
-        var nextMonth = currentDay1.AddMonths(1);
-        var lastOfThisMonth = nextMonth.AddDays(-1);
-        return lastOfThisMonth; 
-    }
-}
-
-public class EndOfMonthCalculator : PaymentDateCalculator
-{
-    public override DateTimeOffset DeterminePaymentDate(DateTimeOffset? previousPaymentDate)
-    {
-        return LastDayOfMonthFor(previousPaymentDate?.AddMonths(1) ?? DateTimeOffset.Now);
-    }
-}
-
-
-
- 
-
-public class Payment
-{
-    public DateTimeOffset Date { get; set; }
-    public decimal Amount { get; set; }
-    public decimal FeeAmount { get; set; } = default;
-    public decimal? PaymentAddressId { get; set; }
-    public string PaymentType { get; set; } = string.Empty;
-
-    public override string ToString()
-    {
-        return
-            $"{Date:yyyy-MM-dd} - ${Amount} - ${FeeAmount} - AddressId: {PaymentAddressId}, PaymentType {PaymentType}";
-    }
-}
-
-public class OrderTerms
-{
-    public int Id { get; set; }
-    public int Length { get; set; }
-    public decimal Rate { get; set; }
-    public decimal? MinAmount { get; set; }
-    public decimal? MaxAmount { get; set; }
-    public bool IsPreCharge { get; set; }
-    public List<PaymentTerm> PaymentTerms { get; set; }
-    
-}
-
-public class PaymentTerm
-{
-    public int Length { get; set; }
-    public decimal? TermAmount { get; set; }
-    public decimal? TermPercentage { get; set; }
-
-    public decimal CalculateAmount(decimal amount)
-    {
-        if (TermAmount != null) return TermAmount.Value;
-
-        if (TermPercentage is null or < 0 or > 100)
-        {
-            throw new ArgumentException("Percentage must be an integer between 1 and 100", nameof(TermPercentage));
-        }
-
-        return Math.Round((TermPercentage.Value / 100m) * amount, 2);
-    }
+    // private DateTimeOffset DeterminePaymentDate(DateTimeOffset? previousDate)
+    // {
+    //     return previousDate is null
+    //         ? _firstPaymentStrategy.DeterminePaymentDate(previousDate)
+    //         : _subsequentPaymentStrategy.DeterminePaymentDate(previousDate);
+    // } 
 }
