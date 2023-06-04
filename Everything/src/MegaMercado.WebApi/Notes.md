@@ -4,6 +4,10 @@ Add Migration
 Update database
 `dotnet ef database update   --project src\MegaMercado.Infrastructure --startup-project src\MegaMercado.WebApi`
 
+Undo last migration
+`dotnet ef migrations remove  --project src\MegaMercado.Infrastructure --startup-project src\MegaMercado.WebApi`
+
+
 To Learn
 - Mediatr pipelines
 - fluent validation

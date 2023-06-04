@@ -3,18 +3,31 @@ using Microsoft.Extensions.Logging;
 
 namespace MegaMercado.Domain.PaymentGeneration;
 
+public abstract class RemainingPaysCalculator
+{
+    public abstract List<Payment> CalculateRemainingPays(decimal remainingAmount, int paymentsCount);
+}
+
+public class EvenRemainingPaysCalculator : RemainingPaysCalculator
+{
+    public override List<Payment> CalculateRemainingPays(decimal remainingAmount, int paymentsCount)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 public class PaymentGenerator
 {
-    private PaymentDateCalculator _firstPaymentStrategy = null!;
-    private PaymentDateCalculator _subsequentPaymentStrategy = null!;
+    private readonly PaymentDateCalculator _firstPaymentDateStrategy;
+    private readonly PaymentDateCalculator _subsequentPaymentDateStrategy;
 
     private ILogger<PaymentGenerator> _logger;
 
     public PaymentGenerator(ILogger<PaymentGenerator> logger)
     {
         _logger = logger;
-        _firstPaymentStrategy = new EndOfMonthCalculator();
-        _subsequentPaymentStrategy = new EndOfMonthCalculator();
+        _firstPaymentDateStrategy = new EndOfMonthCalculator();
+        _subsequentPaymentDateStrategy = new EndOfMonthCalculator();
     }
 
     public List<Payment> GeneratePayments(OrderTerms term, PaymentConfig config, decimal orderTotal)
@@ -29,7 +42,7 @@ public class PaymentGenerator
                 PaymentAddressId = config.FirstPaymentAddressId,
                 PaymentType = config.FirstPaymentType,
                 Amount = orderTotal,
-                Date = _firstPaymentStrategy.DeterminePaymentDate(null),
+                Date = _firstPaymentDateStrategy.DeterminePaymentDate(null),
                 FeeAmount = GetFeeAmount()
             } );
         }
@@ -56,8 +69,8 @@ public class PaymentGenerator
                             Amount = paymentAmount,
                             FeeAmount = GetFeeAmount(),
                             Date = payments.Count == 0
-                                ? _firstPaymentStrategy.DeterminePaymentDate(null)
-                                : _subsequentPaymentStrategy.DeterminePaymentDate(payments[^1].Date)
+                                ? _firstPaymentDateStrategy.DeterminePaymentDate(null)
+                                : _subsequentPaymentDateStrategy.DeterminePaymentDate(payments[^1].Date)
                         };
 
                         payments.Add(payment);
@@ -91,7 +104,7 @@ public class PaymentGenerator
                                 PaymentType = config.SubsequentPaymentType,
                                 Amount = evenPays,
                                 FeeAmount = GetFeeAmount(),
-                                Date = _subsequentPaymentStrategy.DeterminePaymentDate(payments[^1].Date)
+                                Date = _subsequentPaymentDateStrategy.DeterminePaymentDate(payments[^1].Date)
                             };
                             
                             payments.Add(payment);

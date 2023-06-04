@@ -25,24 +25,3 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasForeignKey(x => x.BrandId);
     }
 }
-
-public class CategoryConfiguration : IEntityTypeConfiguration<Category>
-{
-    public void Configure(EntityTypeBuilder<Category> builder)
-    {
-        builder.HasOne<Category>(x => x.ParentCategory)
-            .WithMany(x => x.SubCategories)
-            .HasForeignKey(x => x.ParentCategoryId)
-            .IsRequired(false);
-
-        builder.HasMany<Product>(x => x.Products)
-            .WithMany(x => x.Categories);
-    }
-}
-
-public class BrandConfiguration : IEntityTypeConfiguration<Brand>
-{
-    public void Configure(EntityTypeBuilder<Brand> builder)
-    {
-    }
-}

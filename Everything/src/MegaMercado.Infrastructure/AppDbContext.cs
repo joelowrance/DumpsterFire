@@ -9,7 +9,9 @@ public class AppDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Brand> Brands => Set<Brand>();
-    
+    //public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
+    public DbSet<BlobbyHill> Blobs => Set<BlobbyHill>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -21,6 +23,7 @@ public class AppDbContext : DbContext
     }
 }
 
+//EF cli complained about this
 public class AppDbContextInitializer
 {
     
