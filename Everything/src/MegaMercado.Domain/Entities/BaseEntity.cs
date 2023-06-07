@@ -11,4 +11,7 @@ public abstract class BaseChangeTrackEntity : BaseEntity
     public string? CreatedBy { get; set; }
     public DateTimeOffset Modified { get; set; }
     public string? ModifiedBy { get; set; }
+    public bool? IsDeleted { get; set; }
+    public DateTimeOffset? Deleted { get; set; }
 }
+

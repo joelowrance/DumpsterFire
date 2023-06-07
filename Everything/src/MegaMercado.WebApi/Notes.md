@@ -10,6 +10,7 @@ Undo last migration
 
 To Learn
 - Mediatr pipelines
+  - https://garywoodfine.com/how-to-use-mediatr-pipeline-behaviours/
 - fluent validation
 - redis
 - faceted search
@@ -20,3 +21,4 @@ To Learn
   - History Tables
 - Lucene
   - Background Service
+- https://code-maze.com/cqrs-mediatr-in-aspnet-core/

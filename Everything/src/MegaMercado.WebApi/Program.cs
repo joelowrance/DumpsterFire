@@ -1,10 +1,7 @@
-using Ardalis.Specification;
 using MediatR;
 using MegaMercado.Application;
 using MegaMercado.Application.Products;
 using MegaMercado.Infrastructure;
-using MegaMercado.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 // Add services to the container.
@@ -30,16 +27,15 @@ builder.Host.UseSerilog((context, _, cfg) =>
         .ReadFrom.Configuration(context.Configuration)
         .Enrich.FromLogContext();
 });
+
+builder.Services.AddServicesFromInfrastructureLayer(builder.Configuration)
+    .AddServicesFromApplicationLayer();
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProductByIdQueryHandler).Assembly));
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MegaMercado"),
-        b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
-//builder.Services.AddScoped(typeof(SpecRepository<>));
-builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(SpecRepository<>));
 
 var app = builder.Build();
 

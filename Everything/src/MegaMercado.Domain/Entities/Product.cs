@@ -13,3 +13,8 @@ public class Product : BaseChangeTrackEntity
     public decimal Rating { get; set; }
     public string Description { get; set; }
 }
+
+public class ShoppingCart : BaseChangeTrackEntity
+{
+    
+}
