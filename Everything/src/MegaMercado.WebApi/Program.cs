@@ -58,6 +58,11 @@ app.MapGet("/category/{id:int}", async (IMediator mediator, int id, int? page) =
     return p;
 });
 
+app.MapPut("/product/{id:int}", async (IMediator mediator, UpdateProductCommand command) =>
+{
+    return await mediator.Send(command);
+});
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
