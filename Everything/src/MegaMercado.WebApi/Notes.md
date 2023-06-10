@@ -4,8 +4,12 @@ Add Migration
 Update database
 `dotnet ef database update   --project src\MegaMercado.Infrastructure --startup-project src\MegaMercado.WebApi`
 
-Undo last migration
+remove last migration
 `dotnet ef migrations remove  --project src\MegaMercado.Infrastructure --startup-project src\MegaMercado.WebApi`
+
+undo last migration
+`dotnet ef database update "20230606233547_SoftDelete" --project src\MegaMercado.Infrastructure --startup-project src\MegaMercado.WebApi`
+
 
 
 To Learn

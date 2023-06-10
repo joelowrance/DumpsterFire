@@ -12,8 +12,5 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .WithMany(x => x.SubCategories)
             .HasForeignKey(x => x.ParentCategoryId)
             .IsRequired(false);
-
-        builder.HasMany<Product>(x => x.Products)
-            .WithMany(x => x.Categories);
     }
 }

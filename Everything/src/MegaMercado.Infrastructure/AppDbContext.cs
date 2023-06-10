@@ -1,4 +1,5 @@
 using System.Reflection;
+using MediatR;
 using MegaMercado.Application.Common;
 using MegaMercado.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,11 +10,13 @@ namespace MegaMercado.Infrastructure;
 
 public class AppDbContext : DbContext
 {
+    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Brand> Brands => Set<Brand>();
     //public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
     public DbSet<BlobbyHill> Blobs => Set<BlobbyHill>();
+    public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -21,8 +24,17 @@ public class AppDbContext : DbContext
         base.OnModelCreating(builder);
     }
 
-    public AppDbContext(DbContextOptions options) : base(options)
+    public AppDbContext(
+        DbContextOptions options, 
+        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor
+    ) : base(options)
     {
+        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
     }
 }
 
@@ -82,8 +94,20 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
                 entry.Entity.Modified = _dateTime.NowOffset;
                 entry.Entity.Deleted  = _dateTime.NowOffset;
                 entry.Entity.IsDeleted = true;
+                entry.State = EntityState.Modified;
+
+                // Detach all references to deleted entities, otherwise they will be deleted too.
+                foreach (var entryReference in entry.Navigations)
+                {
+                    entryReference.IsModified = false;
+                    if (entryReference.EntityEntry.State == EntityState.Deleted)
+                    {
+                        entryReference.EntityEntry.State = EntityState.Modified;
+                    }
+                    //entryReference?.TargetEntry?.State = EntityState.Detached;
+                }
             }
-        }
+         }
     }
 }
 

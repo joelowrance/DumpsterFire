@@ -5,7 +5,7 @@ GET http://localhost:5220/
 Accept: application/xml
 
 ###
-GET http://localhost:5220/product/12
+GET http://localhost:5220/product/28
 
 
 ###
@@ -19,3 +19,6 @@ Content-Type: application/json
 "price": 12.34,
 "rating": 99
 }
+
+### 
+DELETE http://localhost:5220/product/28

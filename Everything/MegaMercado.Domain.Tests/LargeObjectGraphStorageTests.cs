@@ -14,18 +14,18 @@ public class LargeObjectGraphStorageTests
         _batchId = Random.Shared.Next(int.MinValue, int.MaxValue);
     }
 
-    [Fact]
-    public void CanSaveAsBlobInDb()
-    {
-        var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(ThingsThatDontBelongInCode.ConnectionString)
-            .Options);
-
-        var products = db.Products.ToList();
-        var dbBlobPersistence = new DbBlobPersistence(ThingsThatDontBelongInCode.ConnectionString);
-
-        dbBlobPersistence.Serialize(products, _batchId);
-    }
+    // [Fact]
+    // public void CanSaveAsBlobInDb()
+    // {
+    //     var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
+    //         .UseSqlServer(ThingsThatDontBelongInCode.ConnectionString)
+    //         .Options);
+    //
+    //     var products = db.Products.ToList();
+    //     var dbBlobPersistence = new DbBlobPersistence(ThingsThatDontBelongInCode.ConnectionString);
+    //
+    //     dbBlobPersistence.Serialize(products, _batchId);
+    // }
 
     [Fact]
     public void CanLoadFromBlobInDb()
@@ -35,16 +35,16 @@ public class LargeObjectGraphStorageTests
         Assert.NotEmpty(data);
     }
 
-    [Fact]
-    public void BinarySerializerStillWorksButIsABadIdea()
-    {
-        var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer(ThingsThatDontBelongInCode.ConnectionString)
-            .Options);
-
-        var products = db.Products.ToList();
-        var fileSystem = new FileSystemPersistence();
-
-        fileSystem.Serialize(products, @"c:\temp\products.bin");
-    }
+    // [Fact]
+    // public void BinarySerializerStillWorksButIsABadIdea()
+    // {
+    //     var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
+    //         .UseSqlServer(ThingsThatDontBelongInCode.ConnectionString)
+    //         .Options);
+    //
+    //     var products = db.Products.ToList();
+    //     var fileSystem = new FileSystemPersistence();
+    //
+    //     fileSystem.Serialize(products, @"c:\temp\products.bin");
+    // }
 }

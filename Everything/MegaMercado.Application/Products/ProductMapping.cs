@@ -22,8 +22,8 @@ public static class ProductMapping
             Rating = product.Rating,
         };
         
-        model.Categories.Add(product.Categories[0].ToCategoryOverviewModel());
-        model.Categories.Add(product.Categories[1].ToCategoryOverviewModel());
+        model.Categories.Add(product.ProductCategories[0].Category.ToCategoryOverviewModel());
+        model.Categories.Add(product.ProductCategories[1].Category.ToCategoryOverviewModel());
 
         return model;
     }
@@ -42,9 +42,9 @@ public static class ProductMapping
             Msrp = product.Msrp,
             Type = product.Type,
             Rating = product.Rating,
-            Categories = (product.Categories)
-                .Select(x => x.ToCategoryOverviewModel())
-                .ToList()
+            // Categories = (product.ProductCategories ?? new List<ProductCategory>())
+            //     .Select(x => x.ToCategoryOverviewModel())
+            //     .ToList()
         };
 
         return model;
@@ -62,8 +62,8 @@ public static class ProductMapping
             Id = category.Id,
             Description = category.Description,
             ChildCategories = category.SubCategories.Select(x => x.ToCategoryOverviewModel()),
-            Products = new Page<ProductDetailsModel>(
-                category.Products.Take(100).Select(x => x.ToProductDetailsModelSafe()), 1, category.Products.Count, 100)
+            // Products = new Page<ProductDetailsModel>(
+            //     category.Products.Take(100).Select(x => x.ToProductDetailsModelSafe()), 1, category.Products.Count, 100)
         };
     } 
 }

@@ -63,6 +63,13 @@ app.MapPut("/product/{id:int}", async (IMediator mediator, UpdateProductCommand 
     return await mediator.Send(command);
 });
 
+app.MapDelete("/product/{id:int}", async (IMediator mediator, int Id) =>
+{
+    
+    return await mediator.Send( new DeleteProductCommand(Id));
+});
+
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
