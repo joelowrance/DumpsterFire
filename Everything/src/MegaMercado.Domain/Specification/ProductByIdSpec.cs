@@ -12,3 +12,13 @@ public class ProductByIdSpec : Specification<Product>
             .Include(x => x.Brand);
     }
 }
+
+
+public class ProductNameExistsSpec : Specification<Product>
+{
+    public ProductNameExistsSpec(string name)
+    {
+        Query.Where(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+            .AsNoTracking();
+    }
+}

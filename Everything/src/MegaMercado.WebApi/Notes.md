@@ -13,16 +13,16 @@ undo last migration
 
 
 To Learn
-- Mediatr pipelines
+- [x] Mediatr pipelines
   - https://garywoodfine.com/how-to-use-mediatr-pipeline-behaviours/
-- fluent validation
-- redis
-- faceted search
-- EventStore db
-- SQL w/ EF
-  - Geography
-  - Hierarchy
-  - History Tables
-- Lucene
-  - Background Service
+- [x] fluent validation
+- [ ] redis
+- [ ] faceted search
+- [ ] EventStore db
+- [ ] SQL w/ EF
+  - [ ] Geography
+  - [ ]Hierarchy
+  - [ ] History Tables
+- [ ] Lucene
+- [ ] Background Service
 - https://code-maze.com/cqrs-mediatr-in-aspnet-core/

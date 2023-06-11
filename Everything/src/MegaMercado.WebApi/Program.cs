@@ -69,6 +69,12 @@ app.MapDelete("/product/{id:int}", async (IMediator mediator, int Id) =>
     return await mediator.Send( new DeleteProductCommand(Id));
 });
 
+// create a post endpoint to create a product
+app.MapPost("/product", async (IMediator mediator, CreateProductCommand command) =>
+{
+    return await mediator.Send(command);
+});
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

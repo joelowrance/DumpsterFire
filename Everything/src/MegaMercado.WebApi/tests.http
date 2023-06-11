@@ -21,4 +21,18 @@ Content-Type: application/json
 }
 
 ### 
-DELETE http://localhost:5220/product/28
+#DELETE http://localhost:5220/product/28
+
+###
+POST http://localhost:5220/product/
+Content-Type: application/json
+
+{
+  "name": "Jug Of Joe",
+  "description": "Worlds greatest coffee",
+  "price": 23.34,
+  "rating": 5,
+  "type": "Coffee",
+  "brandId": 17,
+  "categories": [2, 13]
+}
