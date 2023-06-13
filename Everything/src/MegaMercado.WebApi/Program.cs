@@ -1,6 +1,7 @@
 using MediatR;
 using MegaMercado.Application;
 using MegaMercado.Application.Products;
+using MegaMercado.Application.ShoppingCart;
 using MegaMercado.Infrastructure;
 using Serilog;
 
@@ -74,6 +75,13 @@ app.MapPost("/product", async (IMediator mediator, CreateProductCommand command)
 {
     return await mediator.Send(command);
 });
+
+// create a post endpoint to create a product
+app.MapPost("/cart", async (IMediator mediator, AddItemToCartCommand command) =>
+{
+    return await mediator.Send(command);
+});
+
 
 
 app.UseHttpsRedirection();

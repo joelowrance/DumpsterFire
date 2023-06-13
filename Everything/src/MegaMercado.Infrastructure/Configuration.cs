@@ -1,5 +1,6 @@
 using Ardalis.Specification;
 using MegaMercado.Application.Common;
+using MegaMercado.Infrastructure.Persistence.Redis;
 using MegaMercado.Infrastructure.Repositories;
 using MegaMercado.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,9 @@ public static class Configuration
 
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped(typeof(IRepositoryBase<>), typeof(SpecRepository<>));
+
+        services.AddSingleton<RedisConnection>(x => new RedisConnection("localhost:6379,password=password"));
+        services.AddScoped<IShoppingCartService, ShoppingCartService>();
 
         return services;
     }
