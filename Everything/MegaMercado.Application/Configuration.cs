@@ -17,6 +17,8 @@ public static class Configuration
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         });
 
+        services.AddSingleton<TokenService>();
+
         return services;
     }
 }

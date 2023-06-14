@@ -21,9 +21,11 @@ public static class ProductMapping
             Type = product.Type,
             Rating = product.Rating,
         };
-        
-        model.Categories.Add(product.ProductCategories[0].Category.ToCategoryOverviewModel());
-        model.Categories.Add(product.ProductCategories[1].Category.ToCategoryOverviewModel());
+
+        foreach (var category in product.ProductCategories)
+        {
+            model.Categories.Add(category.Category.ToCategoryOverviewModel());    
+        }
 
         return model;
     }
