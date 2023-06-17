@@ -1,14 +1,10 @@
-using System.Net.Mime;
-using System.Text;
-using MediatR;
+using System.Security.Claims;
 using MegaMercado.Application;
-using MegaMercado.Application.Products;
-using MegaMercado.Application.ShoppingCart;
 using MegaMercado.Infrastructure;
+using MegaMercado.WebApi.Endpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 
@@ -18,6 +14,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger(); //Log any start up problems
 
 Log.Information("Start up");
+IdentityModelEventSource.ShowPII = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +25,8 @@ if ((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empt
     Log.Information("Using appsettings.Development.json");
     builder.Configuration.AddJsonFile("appsettings.Development.json");
 }
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Host.UseSerilog((context, _, cfg) =>
 {
@@ -36,43 +35,42 @@ builder.Host.UseSerilog((context, _, cfg) =>
         .Enrich.FromLogContext();
 });
 
+builder.Services.AddControllers();
 builder.Services.AddServicesFromInfrastructureLayer(builder.Configuration)
     .AddServicesFromApplicationLayer();
 
-
 builder.Services.AddAuthentication(cfg =>
 {
-    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    //cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    //cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(cfg =>
 {
-    cfg.RequireHttpsMetadata = false;
-    cfg.SaveToken = true;
+    //cfg.RequireHttpsMetadata = false;
+    //cfg.SaveToken = true;
     cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(ApiSettings.GenerateSecretByte()),
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidateIssuer = true,
+        ValidateAudience =true,
+        //ValidateLifetime = true,
+        //ValidateIssuerSigningKey = true,
+        //change these
+        ValidIssuer = "JWTAuthenticationServer",
+        ValidAudience = "JWTServicePostmanClient",
+        IssuerSigningKey = new SymmetricSecurityKey(ApiSettings.GenerateSecretByte())
     };
-
-});
-
-builder.Services.AddAuthorization(cfg =>
-{
-    cfg.AddPolicy("Admin", policy => policy.RequireClaim("role", "admin"));
-    cfg.AddPolicy("User", policy => policy.RequireClaim("role", "user"));
-
-    //create a policy to allow anonymous users
-    cfg.AddPolicy("Anonymous", policy => policy.RequireAssertion(_ => true));
-    cfg.DefaultPolicy = cfg.GetPolicy("Anonymous")!;
-        
-});
     
-builder.Services.AddControllers();
+    //cfg.Validate();
+});
+
+
+// builder.Services.AddAuthorization(cfg =>
+// {
+//     cfg.FallbackPolicy = cfg.DefaultPolicy;
+//     cfg.AddPolicy("Admin", policy => policy.RequireClaim("role", "admin"));
+//     cfg.AddPolicy("User", policy => policy.RequireClaim("role", "user"));
+// });
+    
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -82,52 +80,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
-app.MapGet("/product/{id:int}", async (IMediator mediator, int id) =>
-{
-    var p = await mediator.Send(new GetProductByIdQuery(id));
-    return p;
-});
-
-app.MapGet("/category/{id:int}", async (IMediator mediator, int id, int? page) =>
-{
-    var p = await mediator.Send(new GetCategoryByIdQuery(id, page));
-    return p;
-});
-
-app.MapPut("/product/{id:int}", async (IMediator mediator, UpdateProductCommand command) =>
-{
-    return await mediator.Send(command);
-}).RequireAuthorization("Admin");
-
-app.MapDelete("/product/{id:int}", async (IMediator mediator, int Id) =>
-{
-    
-    return await mediator.Send( new DeleteProductCommand(Id));
-}).RequireAuthorization("Admin");
-
-// create a post endpoint to create a product
-app.MapPost("/product", async (IMediator mediator, CreateProductCommand command) =>
-{
-    return await mediator.Send(command);
-}).RequireAuthorization("Admin");
-
-// create a post endpoint to create a product
-app.MapPost("/cart", async (IMediator mediator, AddItemToCartCommand command) =>
-{
-    return await mediator.Send(command);
-}).RequireAuthorization("User");
-
-app.MapPost("/login", ([FromBody] User  user, TokenService tokenService) =>
-{
-    var token = tokenService.GenerateToken(user);
-    return Results.Ok(token);
-}).AllowAnonymous();
-
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+app.AddProductEndpoints()
+    .AddCategoryEndPoints()
+    .AddShoppingCartEndPoints()
+    .AddAuthenticationEndpoints();
+
+app.MapPost("/wtf", (HttpContext context) =>
+{
+    return context.User.Claims.Select(c => new { c.Type, c.Value });
+}).RequireAuthorization();
+
+app.MapControllers();   
 app.Run();
 
 

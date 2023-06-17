@@ -16,12 +16,12 @@ To Learn
 - [x] Mediatr pipelines
   - https://garywoodfine.com/how-to-use-mediatr-pipeline-behaviours/
 - [x] fluent validation
-- [ ] redis
+- [x] redis
 - [ ] faceted search
 - [ ] EventStore db
 - [ ] SQL w/ EF
   - [ ] Geography
-  - [ ]Hierarchy
+  - [ ] Hierarchy
   - [ ] History Tables
 - [ ] Lucene
 - [ ] Background Service
