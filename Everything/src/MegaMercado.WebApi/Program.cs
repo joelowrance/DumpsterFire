@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MegaMercado.Application;
+using MegaMercado.Application.Settings;
 using MegaMercado.Infrastructure;
 using MegaMercado.WebApi.Endpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Configuration = MegaMercado.Infrastructure.Configuration;
 
 // Add services to the container.
 Log.Logger = new LoggerConfiguration()
@@ -25,6 +27,12 @@ if ((Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? string.Empt
     Log.Information("Using appsettings.Development.json");
     builder.Configuration.AddJsonFile("appsettings.Development.json");
 }
+
+var config = builder.Configuration;
+
+builder.Services
+    .AddOptions<AuthenticationSettings>()
+    .BindConfiguration("AuthenticationSettings");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -41,34 +49,39 @@ builder.Services.AddServicesFromInfrastructureLayer(builder.Configuration)
 
 builder.Services.AddAuthentication(cfg =>
 {
-    //cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    cfg.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(cfg =>
 {
-    //cfg.RequireHttpsMetadata = false;
-    //cfg.SaveToken = true;
+    var authSettings = config.GetSection(nameof(AuthenticationSettings)).Get<AuthenticationSettings>()
+                       ?? throw new NullReferenceException();
+    
+    cfg.RequireHttpsMetadata = false;
+    cfg.SaveToken = true;
     cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience =true,
-        //ValidateLifetime = true,
-        //ValidateIssuerSigningKey = true,
+        
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        
         //change these
-        ValidIssuer = "JWTAuthenticationServer",
-        ValidAudience = "JWTServicePostmanClient",
-        IssuerSigningKey = new SymmetricSecurityKey(ApiSettings.GenerateSecretByte())
+        ValidIssuer =authSettings.Issuer,
+        ValidAudience = authSettings.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(authSettings.GenerateSecretByte())
     };
     
-    //cfg.Validate();
+    cfg.Validate();
 });
 
 
-// builder.Services.AddAuthorization(cfg =>
-// {
-//     cfg.FallbackPolicy = cfg.DefaultPolicy;
-//     cfg.AddPolicy("Admin", policy => policy.RequireClaim("role", "admin"));
-//     cfg.AddPolicy("User", policy => policy.RequireClaim("role", "user"));
-// });
+builder.Services.AddAuthorization(cfg =>
+{
+     cfg.FallbackPolicy = cfg.DefaultPolicy;
+     cfg.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin"));
+     cfg.AddPolicy("User", policy => policy.RequireClaim("role", "User"));
+});
     
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -91,7 +104,7 @@ app.AddProductEndpoints()
 app.MapPost("/wtf", (HttpContext context) =>
 {
     return context.User.Claims.Select(c => new { c.Type, c.Value });
-}).RequireAuthorization();
+}).AllowAnonymous();
 
 app.MapControllers();   
 app.Run();

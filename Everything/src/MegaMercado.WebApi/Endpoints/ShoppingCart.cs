@@ -8,7 +8,7 @@ public static class ShoppingCart
     public static WebApplication AddShoppingCartEndPoints(this WebApplication app)
     {
         app.MapPost("/cart", async (IMediator mediator, AddItemToCartCommand command) => await mediator.Send(command))
-            .RequireAuthorization("User");
+            .RequireAuthorization();
 
 
         return app;
