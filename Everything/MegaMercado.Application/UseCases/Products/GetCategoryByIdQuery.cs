@@ -1,10 +1,11 @@
 using Ardalis.Specification;
 using MediatR;
+using MegaMercado.Application.Products;
 using MegaMercado.Application.Products.Dto;
 using MegaMercado.Domain.Entities;
 using MegaMercado.Domain.Specification;
 
-namespace MegaMercado.Application.Products;
+namespace MegaMercado.Application.UseCases.Products;
 
 public record GetCategoryByIdQuery(int CategoryId, int Page) : IRequest<CategoryDetailsModel>
 {

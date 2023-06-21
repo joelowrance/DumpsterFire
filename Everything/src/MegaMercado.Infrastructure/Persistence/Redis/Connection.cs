@@ -7,7 +7,7 @@ namespace MegaMercado.Infrastructure.Persistence.Redis;
 
 public class RedisConnection
 {
-    public ConnectionMultiplexer Multiplexer { get; }
+    private ConnectionMultiplexer Multiplexer { get; }
 
     public RedisConnection(string redisConnectionString)
     {

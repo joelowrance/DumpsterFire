@@ -1,5 +1,6 @@
 using MediatR;
 using MegaMercado.Application.Products;
+using MegaMercado.Application.UseCases.Products;
 
 namespace MegaMercado.WebApi.Endpoints;
 

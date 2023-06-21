@@ -1,7 +1,7 @@
 using MegaMercado.Application.Products.Dto;
 using MegaMercado.Domain.Entities;
 
-namespace MegaMercado.Application.Products;
+namespace MegaMercado.Application.UseCases.Products;
 
 public static class ProductMapping
 {

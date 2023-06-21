@@ -34,11 +34,6 @@ public class TokenService
         {
             Issuer = _authenticationSettings.Value.Issuer,
             Audience = _authenticationSettings.Value.Audience,
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Name.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-            }),
             Expires = DateTime.UtcNow.AddMinutes(30),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

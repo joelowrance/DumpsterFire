@@ -3,7 +3,7 @@ using MediatR;
 using MegaMercado.Domain.Entities;
 using MegaMercado.Domain.Specification;
 
-namespace MegaMercado.Application.Products;
+namespace MegaMercado.Application.UseCases.Products;
 
 public record DeleteProductCommand(int Id) : IRequest<bool>;
 
@@ -23,7 +23,6 @@ public record DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand
         if (product == null) return false;
 
         await _productRepository.DeleteAsync(product, cancellationToken);
-
         
         return true;
     }

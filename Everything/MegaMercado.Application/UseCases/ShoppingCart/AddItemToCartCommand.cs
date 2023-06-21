@@ -1,12 +1,11 @@
 using Ardalis.Specification;
-using Ardalis.Specification.EntityFrameworkCore;
 using MediatR;
 using MegaMercado.Application.Common;
 using MegaMercado.Domain.Entities;
 using MegaMercado.Domain.ShoppingCart;
 using MegaMercado.Domain.Specification;
 
-namespace MegaMercado.Application.ShoppingCart;
+namespace MegaMercado.Application.UseCases.ShoppingCart;
 
 public record AddItemToCartCommand(int ProductId) : IRequest<Cart>;
 

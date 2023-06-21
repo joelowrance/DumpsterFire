@@ -1,5 +1,5 @@
 using MediatR;
-using MegaMercado.Application.ShoppingCart;
+using MegaMercado.Application.UseCases.ShoppingCart;
 
 namespace MegaMercado.WebApi.Endpoints;
 

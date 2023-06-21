@@ -14,12 +14,17 @@ public class ProductByIdSpec : Specification<Product>
     }
 }
 
-
-public class ProductNameExistsSpec : Specification<Product>
-{
-    public ProductNameExistsSpec(string name)
-    {
-        Query.Where(x => x.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
-            .AsNoTracking();
-    }
-}
+// public class ProductSearchSpecification : Specification<Product>
+// {
+//     protected ProductSearchSpecification(string search)
+//     {
+//         if (!string.IsNullOrWhiteSpace(search))
+//         {
+//             Query.Where(x => x.Name.Contains(search) || x.Description.Contains(search));
+//         }
+//
+//         Query.Include(x => x.ProductCategories)
+//             .ThenInclude(x => x.Category)
+//             .Include(x => x.Brand);
+//     }
+// }

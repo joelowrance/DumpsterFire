@@ -3,13 +3,11 @@ using FluentValidation;
 using MediatR;
 using MegaMercado.Domain.Entities;
 
-namespace MegaMercado.Application.Products;
+namespace MegaMercado.Application.UseCases.Products;
 
 public record CreateProductCommand(string Name, string Description, decimal Price, decimal Msrp, decimal Rating,
     int[] Categories, int BrandId, string Type) : IRequest<int>;
     
-    
-// create a validator for the command
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
     public CreateProductCommandValidator(IRepositoryBase<Product> productRepository, IRepositoryBase<Category> categoryRepository, IRepositoryBase<Brand> brandRepository)
@@ -25,7 +23,6 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     }
 }
 
-// create a handler for the command
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
 {
     private readonly IRepositoryBase<Product> _productRepository;
