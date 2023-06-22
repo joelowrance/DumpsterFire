@@ -1,8 +1,9 @@
 using MegaMercado.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace MegaMercado.Application.Common;
 
 public interface IAppDbContext
 {
-//    IQueryable<Product> Products { get; }
+    DbSet<Product> Products { get; }
 }

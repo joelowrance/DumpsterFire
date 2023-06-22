@@ -21,34 +21,34 @@ public class ProductsSearchQueryHandler : IRequestHandler<ProductSearchQuery, Pa
     
     public async Task<PagedList<ProductDetailsModel>> Handle(ProductSearchQuery request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // var query = _appDbContext.Products;
-        //     
-        //     
-        // if (!string.IsNullOrEmpty(request.Query))
-        // {
-        //     query = query.Where(x => x.Description.Contains(request.Query) || x.Name.Contains(request.Query));
-        // }
-        //
-        // query = query.Include(x => x.ProductCategories)
-        //     .ThenInclude(x => x.Category)
-        //     .Include(x => x.Brand);
-        //
-        // var mapped = query.Select(product =>
-        //     new ProductDetailsModel
-        //     {
-        //         Id = product.Id,
-        //         Name = product.Name,
-        //         Description = product.Description,
-        //         BrandName = product.Brand.Name,
-        //         BrandId = product.Brand.Id,
-        //         Price = product.Price,
-        //         Msrp = product.Msrp,
-        //         Type = product.Type,
-        //         Rating = product.Rating,
-        //     });
-        //
-        //
-        // return await PagedList<ProductDetailsModel>.CreateAsync(mapped, request.Page, request.RecordsPerPage);
+
+        var query = _appDbContext.Products.AsQueryable();
+             
+             
+        if (!string.IsNullOrEmpty(request.Query))
+        {
+            query = query.Where(x => x.Description.Contains(request.Query) || x.Name.Contains(request.Query));
+        }
+        
+        query = query.Include(x => x.ProductCategories)
+            .ThenInclude(x => x.Category)
+            .Include(x => x.Brand);
+        
+        var mapped = query.Select(product =>
+            new ProductDetailsModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                BrandName = product.Brand.Name,
+                BrandId = product.Brand.Id,
+                Price = product.Price,
+                Msrp = product.Msrp,
+                Type = product.Type,
+                Rating = product.Rating,
+            });
+        
+        
+        return await PagedList<ProductDetailsModel>.CreateAsync(mapped, request.Page, request.RecordsPerPage);
     }
 }
