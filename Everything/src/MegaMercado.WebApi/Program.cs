@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MegaMercado.Application;
+using MegaMercado.Application.Common;
 using MegaMercado.Application.Settings;
 using MegaMercado.Infrastructure;
 using MegaMercado.WebApi.Endpoints;
@@ -82,7 +83,9 @@ builder.Services.AddAuthorization(cfg =>
      cfg.AddPolicy("Admin", policy => policy.RequireClaim("role", "Admin"));
      cfg.AddPolicy("User", policy => policy.RequireClaim("role", "User"));
 });
-    
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserService, CurrentUserService>();
+  
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 var app = builder.Build();

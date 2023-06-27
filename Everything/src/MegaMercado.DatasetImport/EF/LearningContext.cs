@@ -13,7 +13,7 @@ public class LearningContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(
-            "Server=127.0.0.1;Database=MegaMercado;User Id=sa;Password=!Passw0rd;TrustServerCertificate=Yes;");
+            "Server=127.0.0.1;Database=MegaMercadoImport;User Id=sa;Password=$1Password99();TrustServerCertificate=Yes;");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

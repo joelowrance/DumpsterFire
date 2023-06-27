@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Categories\" />
+      <Folder Include="UseCases\Search\" />
     </ItemGroup>
 
 </Project>

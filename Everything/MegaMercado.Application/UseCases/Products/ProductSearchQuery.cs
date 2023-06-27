@@ -21,9 +21,7 @@ public class ProductsSearchQueryHandler : IRequestHandler<ProductSearchQuery, Pa
     
     public async Task<PagedList<ProductDetailsModel>> Handle(ProductSearchQuery request, CancellationToken cancellationToken)
     {
-
         var query = _appDbContext.Products.AsQueryable();
-             
              
         if (!string.IsNullOrEmpty(request.Query))
         {

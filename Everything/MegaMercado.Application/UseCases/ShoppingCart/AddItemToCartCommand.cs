@@ -13,11 +13,16 @@ public class AddItemToCartCommandHandler : IRequestHandler<AddItemToCartCommand,
 {
     private readonly IRepositoryBase<Product> _productRepository;
     private readonly IShoppingCartService _shoppingCartService;
+    private readonly IUserService _userService;
 
-    public AddItemToCartCommandHandler(IRepositoryBase<Product> productRepository, IShoppingCartService shoppingCartService)
+    public AddItemToCartCommandHandler(
+        IRepositoryBase<Product> productRepository, 
+        IShoppingCartService shoppingCartService, 
+        IUserService userService)
     {
         _productRepository = productRepository;
         _shoppingCartService = shoppingCartService;
+        _userService = userService;
     }
 
     public async Task<Cart> Handle(AddItemToCartCommand request, CancellationToken cancellationToken)
@@ -29,8 +34,7 @@ public class AddItemToCartCommandHandler : IRequestHandler<AddItemToCartCommand,
             throw new NullReferenceException($"Product not found: { request.ProductId }");
         }
         
-        var cart = _shoppingCartService.AddItemToCart(new Guid("F456BA68-D279-45F8-A54C-F0C9DC315B47"), new LineItem(p.Id, p.Msrp, p.Price)  { Quantity = 1});
+        var cart = _shoppingCartService.AddItemToCart(_userService.Email, new LineItem(p.Id, p.Msrp, p.Price)  { Quantity = 1});
         return cart;
     }
 }
-

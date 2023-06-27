@@ -51,15 +51,15 @@ public class ShoppingCartService : IShoppingCartService
         _redisConnection = redisConnection;
     }
 
-    public Cart GetCart(Guid userId)
+    public Cart GetCart(string emailAddress)
     {
-        var cart = _redisConnection.LoadObject<Cart>(GetCartKey(userId));
-        return cart ?? new Cart() { Id = userId };
+        var cart = _redisConnection.LoadObject<Cart>(GetCartKey(emailAddress));
+        return cart ?? new Cart { Id = emailAddress };
     }
     
-    public Cart AddItemToCart(Guid userId, LineItem lineItem)
+    public Cart AddItemToCart(string emailAddress, LineItem lineItem)
     {
-        var cart = GetCart(userId);
+        var cart = GetCart(emailAddress);
 
         var existingItem = cart.Items.FirstOrDefault(x => x.ProductId == lineItem.ProductId);
         
@@ -72,14 +72,14 @@ public class ShoppingCartService : IShoppingCartService
             cart.Items.Add(lineItem);
         }
 
-        _redisConnection.SaveObject(GetCartKey(userId), cart);
+        _redisConnection.SaveObject(GetCartKey(emailAddress), cart);
 
         return cart;
     }
 
-    public Cart RemoveItemFromCart(Guid userId, int productid)
+    public Cart RemoveItemFromCart(string emailAddress, int productid)
     {
-        var cart = GetCart(userId);
+        var cart = GetCart(emailAddress);
 
         var items = cart.Items.FirstOrDefault(x => x.ProductId == productid);
         
@@ -88,13 +88,13 @@ public class ShoppingCartService : IShoppingCartService
             cart.Items.Remove(items);
         }
         
-        _redisConnection.SaveObject(GetCartKey(userId), cart);
+        _redisConnection.SaveObject(GetCartKey(emailAddress), cart);
 
         return cart;
     }
     
-    private string GetCartKey(Guid userId)
+    private string GetCartKey(string emailAddress)
     {
-        return $"cart:{userId}";
+        return $"cart:{emailAddress}";
     }
 }
