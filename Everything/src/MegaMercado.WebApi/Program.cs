@@ -4,6 +4,7 @@ using MegaMercado.Application.Common;
 using MegaMercado.Application.Settings;
 using MegaMercado.Infrastructure;
 using MegaMercado.WebApi.Endpoints;
+using MegaMercado.WebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Logging;
@@ -85,6 +86,7 @@ builder.Services.AddAuthorization(cfg =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, CurrentUserService>();
+builder.Services.AddSingleton<TokenService>();
   
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 

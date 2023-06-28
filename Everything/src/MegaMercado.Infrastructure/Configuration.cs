@@ -20,13 +20,10 @@ public static class Configuration
                 builder => builder.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
         });
 
+        services.AddSingleton<RedisConnection>(x => new RedisConnection(configuration.GetConnectionString("redis")!));
         services.AddTransient<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped(typeof(IRepositoryBase<>), typeof(SpecRepository<>));
-
-        services.AddSingleton<RedisConnection>(x => new RedisConnection(configuration.GetConnectionString("redis")!));
         services.AddScoped<IShoppingCartService, ShoppingCartService>();
-        
-        //TODO:  Revert to repositotry.  Spec pattern isnt working how i want.
         services.AddScoped<IAppDbContext, AppDbContext>();
 
         return services;

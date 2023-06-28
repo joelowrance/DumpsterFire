@@ -6,16 +6,12 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MegaMercado.Infrastructure;
 
-
-
 public class AppDbContext : DbContext, IAppDbContext
 {
     private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Product> Products => Set<Product>();
-    //public IQueryable<Product> Products2 => Set<Product>();
     public DbSet<Brand> Brands => Set<Brand>();
-    //public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
     public DbSet<BlobbyHill> Blobs => Set<BlobbyHill>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
 
