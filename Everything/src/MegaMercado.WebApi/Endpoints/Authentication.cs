@@ -1,4 +1,5 @@
 using MegaMercado.WebApi.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MegaMercado.WebApi.Endpoints;

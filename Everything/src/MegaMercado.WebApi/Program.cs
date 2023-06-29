@@ -104,7 +104,8 @@ app.UseAuthorization();
 app.AddProductEndpoints()
     .AddCategoryEndPoints()
     .AddShoppingCartEndPoints()
-    .AddAuthenticationEndpoints();
+    .AddAuthenticationEndpoints()
+    .AddSearchEndPoints();
 
 app.MapPost("/wtf", (HttpContext context) =>
 {
